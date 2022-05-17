@@ -1,70 +1,61 @@
 ﻿using System;
 using UnityEngine;
-using Zenject;
 
 public abstract class UIElement : MonoBehaviour, IUIElement
 {
-	public event Action<IUIElement> OnElementHideStartedEvent;
-	public event Action<IUIElement> OnElementHiddenCompletelyEvent;
-	public event Action<IUIElement> OnElementStartShowEvent;
-	public event Action<IUIElement> OnElementShownEvent;
-	public event Action<IUIElement> OnElementDestroyedEvent;
+    public event Action<IUIElement> OnElementHideStartedEvent;
+    public event Action<IUIElement> OnElementHiddenCompletelyEvent;
+    public event Action<IUIElement> OnElementStartShowEvent;
+    public event Action<IUIElement> OnElementShownEvent;
+    public event Action<IUIElement> OnElementDestroyedEvent;
 
-	public bool IsActive { get; protected set; } = true;
-	
-	protected UIController UIController;
-	
-	[Inject]
-	protected virtual void Construct(UIController uiController)
-	{
-		UIController = uiController;
-	}
+    public bool IsActive { get; protected set; } = true;
 
-	public virtual void Show() 
-	{
-		OnPreShow();
-		gameObject.SetActive(true);
-		IsActive = true;
-		
-		OnElementStartShowEvent?.Invoke(this);
+    public virtual void Show()
+    {
+        OnPreShow();
+        gameObject.SetActive(true);
+        IsActive = true;
 
-		OnPostShow();
-	}
+        OnElementStartShowEvent?.Invoke(this);
 
-	protected virtual void OnPreShow() { }
+        OnPostShow();
+    }
 
-	protected virtual void OnPostShow()
-	{
-		OnElementShownEvent?.Invoke(this);
-	}
+    protected virtual void OnPreShow() { }
 
-	public void Hide() 
-	{
-		if (!IsActive)
-		{
-			return;
-		}
+    protected virtual void OnPostShow()
+    {
+        OnElementShownEvent?.Invoke(this);
+    }
 
-		OnPreHide();
+    public void Hide()
+    {
+        if (!IsActive)
+        {
+            return;
+        }
 
-		OnElementHideStartedEvent?.Invoke(this);
-		
-		HideInstantly();
-	}
+        OnPreHide();
 
-	public virtual void HideInstantly() 
-	{
-		if (!IsActive)
-		{
-			return;
-		}
+        OnElementHideStartedEvent?.Invoke(this);
 
-		IsActive = false;
-		gameObject.SetActive(false);
-		OnPostHide();
-		OnElementHiddenCompletelyEvent?.Invoke(this);
-	}
+        HideInstantly();
+    }
 
-	protected virtual void OnPreHide() { }
-	protected virtual void OnPostHide() { }
+    public virtual void HideInstantly()
+    {
+        if (!IsActive)
+        {
+            return;
+        }
+
+        IsActive = false;
+        gameObject.SetActive(false);
+        OnPostHide();
+        OnElementHiddenCompletelyEvent?.Invoke(this);
+    }
+
+    protected virtual void OnPreHide() { }
+    protected virtual void OnPostHide() { }
 }

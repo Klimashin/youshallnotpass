@@ -8,13 +8,12 @@ public class BootstrapInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container
-            .Bind<UIController>()
+            .BindInterfacesAndSelfTo<UIController>()
             .FromComponentInNewPrefab(_uiControllerPrefab)
-            .AsSingle()
-            .NonLazy();
+            .AsSingle();
 
         Container
-            .Bind<GameFSM>()
+            .BindInterfacesAndSelfTo<GameFSM>()
             .FromNewComponentOnNewGameObject()
             .AsSingle()
             .NonLazy();

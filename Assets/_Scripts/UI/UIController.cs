@@ -1,67 +1,62 @@
 using System;
 using System.Collections.Generic;
-using MonsterLove.StateMachine;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using Zenject;
 
-public class UIController : MonoBehaviour 
+public class UIController : MonoBehaviour, IInitializable
 {
-	[SerializeField] private Camera _uiCamera;
-	[SerializeField] private RectTransform _uiCanvas;
-	[SerializeField] private MainMenuScreen _mainMenuScreen;
+    [SerializeField] private Camera _uiCamera;
+    [SerializeField] private RectTransform _uiCanvas;
+    [SerializeField] private MainMenuScreen _mainMenuScreen;
+    [SerializeField] private GameplayScreen _gameplayScreen;
+    [SerializeField] private GameOverScreen _gameOverScreen;
 
-	private readonly Dictionary<Type, IUIElement> _createdUIElementsMap = new();
-	private readonly Dictionary<Type, UIElement> _uiPrefabsDict = new();
-	
-	public enum States
-	{
-		MainMenu,
-		Gameplay
-	}
-	
-	private StateMachine<ExampleBasic.States, StateDriverUnity> _fsm;
-	
-	public T ShowUIElement<T>() where T : UIElement
-	{
-		var type = typeof(T);
+    private readonly Dictionary<Type, IUIElement> _uiElementsMap = new();
 
-		if (_createdUIElementsMap.TryGetValue(type, out var uiElement))
-		{
-			uiElement.Show();
-			return (T) uiElement;
-		}
+    public void Initialize()
+    {
+        FillUiDictionary();
 
-		throw new KeyNotFoundException($"UIController::ShowUIElement - Missing ui element of type {type}.");
-	}
+        SetupUiCamera();
+    }
 
-	private void Awake()
-	{
-		FillUiDictionary();
-		
-		SetupUiCamera();
+    public T ShowUIElement<T>() where T : UIElement
+    {
+        var type = typeof(T);
 
-		BuildUI();
-	}
+        if (!_uiElementsMap.TryGetValue(type, out var uiElement))
+        {
+            throw new KeyNotFoundException($"UIController::ShowUIElement - Missing ui element of type {type}.");
+        }
 
-	private void FillUiDictionary()
-	{
-		_uiPrefabsDict[typeof(MainMenuScreen)] = _mainMenuScreen;
-	}
+        uiElement.Show();
+        return (T)uiElement;
+    }
 
-	private void SetupUiCamera()
-	{
-		var mainCamera = Camera.main;
-		var cameraData = mainCamera.GetUniversalAdditionalCameraData();
-		cameraData.cameraStack.Add(_uiCamera);
-	}
+    public void HideUIElement<T>() where T : UIElement
+    {
+        var type = typeof(T);
 
-	private void BuildUI() 
-	{
-		foreach (var (uiElementType, uiElementPrefab) in _uiPrefabsDict)
-		{
-			var uiElement = Instantiate(uiElementPrefab, _uiCanvas);
-			_createdUIElementsMap[uiElementType] = uiElement;
-			uiElement.gameObject.SetActive(false);
-		}
-	}
+        if (!_uiElementsMap.TryGetValue(type, out var uiElement))
+        {
+            throw new KeyNotFoundException($"UIController::HideUIElement - Missing ui element of type {type}.");
+        }
+
+        uiElement.Hide();
+    }
+
+    private void FillUiDictionary()
+    {
+        _uiElementsMap[_mainMenuScreen.GetType()] = _mainMenuScreen;
+        _uiElementsMap[_gameplayScreen.GetType()] = _gameplayScreen;
+        _uiElementsMap[_gameOverScreen.GetType()] = _gameOverScreen;
+    }
+
+    private void SetupUiCamera()
+    {
+        var mainCamera = Camera.main;
+        var cameraData = mainCamera.GetUniversalAdditionalCameraData();
+        cameraData.cameraStack.Add(_uiCamera);
+    }
 }

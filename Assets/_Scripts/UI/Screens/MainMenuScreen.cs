@@ -7,16 +7,15 @@ public class MainMenuScreen : UIScreen
     [SerializeField] private Button _startGameButton;
     [SerializeField] private Button _quitGameButton;
 
-    protected override void OnPostShow()
+    private GameFSM _fsm;
+
+    [Inject]
+    private void Construct(GameFSM fsm)
     {
-        _startGameButton.onClick.AddListener(OnStartGameButtonClick);
+        _fsm = fsm;
+
+        _startGameButton.onClick.AddListener(_fsm.OnStartGameButtonPressed);
         _quitGameButton.onClick.AddListener(OnQuitGameButtonClick);
-    }
-    
-    protected override void OnPreHide()
-    {
-        _startGameButton.onClick.RemoveAllListeners();
-        _quitGameButton.onClick.RemoveAllListeners();
     }
 
     private void OnQuitGameButtonClick()
@@ -26,10 +25,5 @@ public class MainMenuScreen : UIScreen
 #else
         Application.Quit();
 #endif
-    }
-
-    private void OnStartGameButtonClick()
-    {
-        //UIController.ToGameplayState();
     }
 }

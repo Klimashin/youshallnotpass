@@ -1,6 +1,6 @@
-﻿public abstract class UIScreen : UIElement, IUIScreen 
+﻿public abstract class UIScreen : UIElement, IUIScreen
 {
-	public virtual void OnCreate() { }
-	public virtual void OnInitialize() { }
-	public virtual void OnStart() { }
+    public virtual void OnCreate() { }
+    public virtual void OnInitialize() { }
+    public virtual void OnStart() { }
 }
