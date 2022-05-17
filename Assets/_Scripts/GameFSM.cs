@@ -6,6 +6,7 @@ public class GameFSM : MonoBehaviour, IInitializable
 {
     private StateMachine<States, Driver> _fsm;
     private UIController _uiController;
+    private InputActions _input;
 
     public void Initialize()
     {
@@ -14,9 +15,10 @@ public class GameFSM : MonoBehaviour, IInitializable
     }
 
     [Inject]
-    private void Construct(UIController uiController)
+    private void Construct(UIController uiController, InputActions input)
     {
         _uiController = uiController;
+        _input = input;
     }
 
     public void OnStartGameButtonPressed()
@@ -83,6 +85,7 @@ public class GameFSM : MonoBehaviour, IInitializable
     private void Gameplay_Enter()
     {
         _uiController.ShowUIElement<GameplayScreen>();
+        _input.Gameplay.Enable();
     }
 
     private void Gameplay_GameplayToGameOver()
@@ -92,6 +95,7 @@ public class GameFSM : MonoBehaviour, IInitializable
 
     private void Gameplay_Exit()
     {
+        _input.Gameplay.Disable();
         _uiController.HideUIElement<GameplayScreen>();
     }
     #endregion
