@@ -31,7 +31,7 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""name"": ""TouchPos"",
                     ""type"": ""Value"",
                     ""id"": ""eae2a1c8-b3ff-46c4-a44b-12602bab725d"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Touch"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -41,7 +41,7 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ce7451fe-c1b7-4193-a10a-6cc6353473c6"",
-                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""path"": ""<Touchscreen>/primaryTouch"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

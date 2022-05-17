@@ -85,7 +85,6 @@ public class GameFSM : MonoBehaviour, IInitializable
     private void Gameplay_Enter()
     {
         _uiController.ShowUIElement<GameplayScreen>();
-        _input.Gameplay.Enable();
     }
 
     private void Gameplay_GameplayToGameOver()
@@ -95,7 +94,6 @@ public class GameFSM : MonoBehaviour, IInitializable
 
     private void Gameplay_Exit()
     {
-        _input.Gameplay.Disable();
         _uiController.HideUIElement<GameplayScreen>();
     }
     #endregion
