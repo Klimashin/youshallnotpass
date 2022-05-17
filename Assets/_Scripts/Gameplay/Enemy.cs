@@ -1,18 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private int _damage = 1;
+    [SerializeField] private int _speed;
+
+    public int Damage => _damage;
+
+    private Vector3 MoveDirection { get; set; }
+
+    public void SetDirection(Vector3 enemyMoveDirection)
     {
-        
+        MoveDirection = enemyMoveDirection;
+        transform.rotation.SetLookRotation(MoveDirection, Vector3.forward);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Move(float deltaTime)
     {
-        
+        transform.Translate(MoveDirection * (_speed * deltaTime));
     }
 }

@@ -1,18 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class DamageZone : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public EventHandler<Enemy> EnemyEnteredDamageZone;
+    
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (other.TryGetComponent(out Enemy enemy))
+        {
+            EnemyEnteredDamageZone?.Invoke(this, enemy);
+        }
     }
 }
