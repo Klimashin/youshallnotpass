@@ -651,6 +651,7 @@ MonoBehaviour:
   _spawnTimeout: 1
   _generationZoneOffsetHorizontal: 1
   _generationZoneOffsetVertical: 2
+  _initialWeapon: {fileID: 0}
 --- !u!1 &1566537951
 GameObject:
   m_ObjectHideFlags: 0
