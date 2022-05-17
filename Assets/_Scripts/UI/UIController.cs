@@ -64,9 +64,4 @@ public class UIController : MonoBehaviour
 			uiElement.gameObject.SetActive(false);
 		}
 	}
-
-	public void ToGameplayState()
-	{
-		
-	}
 }
