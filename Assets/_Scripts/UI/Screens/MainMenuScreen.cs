@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using TMPro;
 
 public class MainMenuScreen : UIScreen
 {
     [SerializeField] private Button _startGameButton;
     [SerializeField] private Button _quitGameButton;
+    [SerializeField] private TextMeshProUGUI _highscoreText;
 
     private GameFSM _fsm;
 
