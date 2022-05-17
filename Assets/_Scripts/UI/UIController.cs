@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MonsterLove.StateMachine;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -11,6 +12,14 @@ public class UIController : MonoBehaviour
 
 	private readonly Dictionary<Type, IUIElement> _createdUIElementsMap = new();
 	private readonly Dictionary<Type, UIElement> _uiPrefabsDict = new();
+	
+	public enum States
+	{
+		MainMenu,
+		Gameplay
+	}
+	
+	private StateMachine<ExampleBasic.States, StateDriverUnity> _fsm;
 	
 	public T ShowUIElement<T>() where T : UIElement
 	{
@@ -54,5 +63,10 @@ public class UIController : MonoBehaviour
 			_createdUIElementsMap[uiElementType] = uiElement;
 			uiElement.gameObject.SetActive(false);
 		}
+	}
+
+	public void ToGameplayState()
+	{
+		
 	}
 }

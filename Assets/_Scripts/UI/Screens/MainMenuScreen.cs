@@ -1,10 +1,20 @@
+using Overtime.FSM;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class MainMenuScreen : UIScreen
 {
     [SerializeField] private Button _startGameButton;
     [SerializeField] private Button _quitGameButton;
+
+    private StateMachine<UIController, GameStateID, GameStateTransition> _gameFsm;
+    
+    [Inject]
+    private void Construct(StateMachine<UIController, GameStateID, GameStateTransition> fsm)
+    {
+        _gameFsm = fsm;
+    }
 
     protected override void OnPostShow()
     {
@@ -29,6 +39,6 @@ public class MainMenuScreen : UIScreen
 
     private void OnStartGameButtonClick()
     {
-        Debug.Log("START_GAME");
+        UIController.ToGameplayState();
     }
 }

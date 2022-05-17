@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Zenject;
 
 public abstract class UIElement : MonoBehaviour, IUIElement
 {
@@ -10,7 +11,14 @@ public abstract class UIElement : MonoBehaviour, IUIElement
 	public event Action<IUIElement> OnElementDestroyedEvent;
 
 	public bool IsActive { get; protected set; } = true;
-	//protected UIController UIController => UI.controller;
+	
+	protected UIController UIController;
+	
+	[Inject]
+	protected virtual void Construct(UIController uiController)
+	{
+		UIController = uiController;
+	}
 
 	public virtual void Show() 
 	{
