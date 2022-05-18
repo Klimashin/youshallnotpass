@@ -18,7 +18,8 @@ MonoBehaviour:
   - {fileID: -2917235983323862337, guid: 41a4210ebd23c8a4fb932d04bcb5f938, type: 3}
   WeaponUnlockLimits: 050000000a000000
   EnemyPrefab: {fileID: 7131616845275027606, guid: c00fed6e60010c745ad507bea9d5ab1c, type: 3}
+  EnemyHpRange: {x: 1, y: 6}
   RotationSpeed: 50
   RotationConstraint: 60
-  EnemySpawnTimeout: 1
+  EnemySpawnTimeout: 2
   InitialHp: 3

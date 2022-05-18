@@ -1,6 +1,6 @@
 using Zenject;
 
-public class GameplayScreen : UIScreen
+public class GameplayScreen : UIElement
 {
     private GameplayController _gameplayCtrl;
 

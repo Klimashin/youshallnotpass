@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class HpWidget : MonoBehaviour
+public class HpWidget : UIElement
 {
     [SerializeField] private Image _hpIcon;
 

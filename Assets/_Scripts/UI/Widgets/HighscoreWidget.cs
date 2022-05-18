@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using Zenject;
 
-public class HighscoreWidget : MonoBehaviour
+public class HighscoreWidget : UIElement
 {
     [SerializeField] private TextMeshProUGUI _highscoreText;
 

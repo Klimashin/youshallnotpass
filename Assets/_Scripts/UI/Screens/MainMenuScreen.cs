@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using Zenject;
 using TMPro;
 
-public class MainMenuScreen : UIScreen
+public class MainMenuScreen : UIElement
 {
     [SerializeField] private Button _startGameButton;
     [SerializeField] private Button _quitGameButton;

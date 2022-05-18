@@ -76,10 +76,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b181e80e5aaba144cab06a814e890cb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _missilePrefab: {fileID: 4113920230931783804, guid: b18a07fee21451742bd4277c133c9265, type: 3}
   _missileSpeed: 5
-  _shotMissilesCount: 5
-  _shotAngle: 15
   _shotCooldown: 1
   _missileLifetime: 2
+  _missilePrefab: {fileID: 4113920230931783804, guid: b18a07fee21451742bd4277c133c9265, type: 3}
+  _shotMissilesCount: 6
+  _shotAngle: 15
   _missileLaunchPoint: {fileID: 4090765410413257571}

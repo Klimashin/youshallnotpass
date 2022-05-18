@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class GameOverScreen : UIScreen
+public class GameOverScreen : UIElement
 {
     [SerializeField] private Button _mainMenuButton;
     [SerializeField] private Button _restartButton;

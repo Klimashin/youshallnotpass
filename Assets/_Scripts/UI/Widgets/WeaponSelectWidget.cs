@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class WeaponSelectWidget : MonoBehaviour
+public class WeaponSelectWidget : UIElement
 {
     [SerializeField] private Button[] _weaponButtons;
 

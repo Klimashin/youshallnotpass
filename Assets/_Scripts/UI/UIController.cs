@@ -12,7 +12,7 @@ public class UIController : MonoBehaviour, IInitializable
     [SerializeField] private GameplayScreen _gameplayScreen;
     [SerializeField] private GameOverScreen _gameOverScreen;
 
-    private readonly Dictionary<Type, IUIElement> _uiElementsMap = new();
+    private readonly Dictionary<Type, UIElement> _uiElementsMap = new();
 
     public void Initialize()
     {

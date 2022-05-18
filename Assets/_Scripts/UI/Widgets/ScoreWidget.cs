@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using Zenject;
 
-public class ScoreWidget : MonoBehaviour
+public class ScoreWidget : UIElement
 {
     [SerializeField] private TextMeshProUGUI _scoreText;
 

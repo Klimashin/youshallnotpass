@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -170,6 +169,7 @@ public class GameplayController : MonoBehaviour
         var enemyMoveDirection = (enemyDirectionPoint - enemyInitialPos).normalized;
         
         newEnemy.SetDirection(enemyMoveDirection);
+        newEnemy.SetHp(UnityEngine.Random.Range(_settings.EnemyHpRange.x, _settings.EnemyHpRange.y));
         newEnemy.OnEliminatedHandler += OnEnemyEliminated;
         _gameSessionData.AddEnemy(newEnemy);
     }

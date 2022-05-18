@@ -1,59 +1,41 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class UIElement : MonoBehaviour, IUIElement
+public abstract class UIElement : MonoBehaviour
 {
-    public event Action<IUIElement> OnElementHideStartedEvent;
-    public event Action<IUIElement> OnElementHiddenCompletelyEvent;
-    public event Action<IUIElement> OnElementStartShowEvent;
-    public event Action<IUIElement> OnElementShownEvent;
-    public event Action<IUIElement> OnElementDestroyedEvent;
-
-    public bool IsActive { get; protected set; } = true;
-
     public virtual void Show()
     {
         OnPreShow();
-        gameObject.SetActive(true);
-        IsActive = true;
 
-        OnElementStartShowEvent?.Invoke(this);
+        gameObject.SetActive(true);
 
         OnPostShow();
     }
 
     protected virtual void OnPreShow() { }
 
-    protected virtual void OnPostShow()
-    {
-        OnElementShownEvent?.Invoke(this);
-    }
+    protected virtual void OnPostShow() { }
 
     public void Hide()
     {
-        if (!IsActive)
+        if (!gameObject.activeSelf)
         {
             return;
         }
 
         OnPreHide();
 
-        OnElementHideStartedEvent?.Invoke(this);
-
         HideInstantly();
     }
 
     public virtual void HideInstantly()
     {
-        if (!IsActive)
+        if (!gameObject.activeSelf)
         {
             return;
         }
 
-        IsActive = false;
         gameObject.SetActive(false);
         OnPostHide();
-        OnElementHiddenCompletelyEvent?.Invoke(this);
     }
 
     protected virtual void OnPreHide() { }

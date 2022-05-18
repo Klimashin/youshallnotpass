@@ -14,10 +14,17 @@ public class Enemy : MonoBehaviour
 
     private Vector3 MoveDirection { get; set; }
 
+    private int _currentHp;
+    public void SetHp(int hp)
+    {
+        _currentHp = hp;
+    }
+
     public void SetDirection(Vector3 enemyMoveDirection)
     {
         MoveDirection = enemyMoveDirection;
-        transform.rotation.SetLookRotation(MoveDirection, Vector3.forward);
+        float angle = Mathf.Atan2(MoveDirection.y, MoveDirection.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
     public void Move(float deltaTime)
@@ -27,6 +34,10 @@ public class Enemy : MonoBehaviour
 
     public void OnHit()
     {
-        OnEliminatedHandler?.Invoke(this, EventArgs.Empty);
+        _currentHp--;
+        if (_currentHp <= 0)
+        {
+            OnEliminatedHandler?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
