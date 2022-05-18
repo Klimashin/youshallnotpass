@@ -44,17 +44,15 @@ public class SingleShotWeapon : PlayerWeapon
     {
         _currentShotCooldown = _shotCooldown;
 
-        foreach (var missile in _activeMissiles)
+        for (int i = _activeMissiles.Count - 1; i >= 0; i--)
         {
-            UtilizeMissile(missile);
+            UtilizeMissile(_activeMissiles[i]);
         }
-        
-        _activeMissiles.Clear();
     }
     
     private void ShotMissile()
     {
-        var missile = Instantiate(_missile, _missileLaunchPoint);
+        var missile = Instantiate(_missile, _missileLaunchPoint); // @TODO: use object pool
         missile.transform.SetParent(null);
         missile.EnemyHitHandler += EnemyHitHandler;
         _activeMissiles.Add(missile);

@@ -1,14 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using Zenject;
 
 public class GameOverScreen : UIScreen
 {
     [SerializeField] private Button _mainMenuButton;
     [SerializeField] private Button _restartButton;
-    [SerializeField] private TextMeshProUGUI _highscoreText;
-    [SerializeField] private TextMeshProUGUI _scoreText;
 
     private GameFSM _fsm;
 

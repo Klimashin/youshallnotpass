@@ -15,6 +15,10 @@ public class ProjectInstaller : MonoInstaller
             .AsSingle();
 
         Container
+            .BindInstance(new PersistentStorage())
+            .AsSingle();
+
+        Container
             .BindInstance(_gameSettings)
             .AsSingle();
     }

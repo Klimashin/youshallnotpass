@@ -13,11 +13,12 @@ public class GameplayController : MonoBehaviour
     [SerializeField] private float _generationZoneOffsetHorizontal = 1f;
     [SerializeField] private float _generationZoneOffsetVertical = 2f;
 
+    public EventHandler<GameSessionData> NewGameSessionStarted;
+
+    private GameSessionData _gameSessionData;
     private GameFSM _fsm;
     private InputActions _input;
-    private GameSessionData _gameSessionData;
     private GameSettings _settings;
-
     private PlayerWeapon[] _weapons = new PlayerWeapon[3];
 
     [Inject]
@@ -38,11 +39,10 @@ public class GameplayController : MonoBehaviour
         _screenBottomRightWorld = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0f, 0f));
     }
 
-    private void OnEnemyEnteredDamageZone(object sender, Enemy e)
+    private void OnEnemyEnteredDamageZone(object sender, Enemy enemy)
     {
-        _gameSessionData.LoseHp(e.Damage);
-        _gameSessionData.RemoveEnemy(e);
-        Destroy(e.gameObject); // @TODO: use object pooling
+        _gameSessionData.LoseHp(enemy.Damage);
+        UtilizeEnemy(enemy);
     }
 
     private Coroutine _gameplayCoroutine;
@@ -61,13 +61,14 @@ public class GameplayController : MonoBehaviour
         TouchSimulation.Enable();
         EnhancedTouchSupport.Enable();
 
+        _gameSessionData = new GameSessionData(3, _weapons[0]);
+        NewGameSessionStarted?.Invoke(this, _gameSessionData);
+
         yield return new WaitForSeconds(1f);
 
         _input.Gameplay.Enable();
 
-        _gameSessionData = new GameSessionData(3, _weapons[0]);
-
-        while (true)
+        while (_gameSessionData.CurrentHp > 0)
         {
             var deltaTime = Time.deltaTime;
             HandlePlayerInput(deltaTime);
@@ -78,9 +79,11 @@ public class GameplayController : MonoBehaviour
             yield return null;
         }
 
+        UtilizeAllEnemies();
+
         _input.Gameplay.Disable();
 
-        _fsm.OnGameOver();
+        _fsm.OnGameOver(_gameSessionData);
     }
 
     private void HandlePlayerWeapon(float deltaTime)
@@ -127,7 +130,7 @@ public class GameplayController : MonoBehaviour
     private Vector3 _screenBottomRightWorld;
     private void SpawnEnemy()
     {
-        var newEnemy = Instantiate(_settings.EnemyPrefab);
+        var newEnemy = Instantiate(_settings.EnemyPrefab); // @TODO: use object pooling
 
         var initialPosX = UnityEngine.Random.Range(
             _screenTopLeftWorld.x - _generationZoneOffsetHorizontal,
@@ -149,9 +152,24 @@ public class GameplayController : MonoBehaviour
 
     private void OnEnemyEliminated(object sender, EventArgs e)
     {
-        _gameSessionData.AddScore(1);
-        _gameSessionData.RemoveEnemy(sender as Enemy);
-        Destroy((sender as Enemy).gameObject); // @TODO: use object pooling
+        var enemy = sender as Enemy;
+        _gameSessionData.AddScore(enemy.ScorePoints);
+        UtilizeEnemy(enemy);
+    }
+
+    private void UtilizeEnemy(Enemy enemy)
+    {
+        _gameSessionData.RemoveEnemy(enemy);
+        Destroy(enemy.gameObject); // @TODO: use object pooling
+    }
+
+    private void UtilizeAllEnemies()
+    {
+        var count = _gameSessionData.ActiveEnemies.Count;
+        for (int i = count - 1; i >= 0; i--)
+        {
+            UtilizeEnemy(_gameSessionData.ActiveEnemies[i]);
+        }
     }
 
     private void ApplyRotationConstraint()
@@ -213,6 +231,7 @@ public class GameSessionData
     public void LoseHp(int amount)
     {
         CurrentHp -= amount;
+        CurrentHp = Mathf.Max(0, CurrentHp);
         HpChanged?.Invoke(this, amount);
     }
 

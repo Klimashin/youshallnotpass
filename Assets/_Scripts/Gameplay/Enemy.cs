@@ -4,11 +4,13 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private int _damage = 1;
+    [SerializeField] private int _scorePoints = 1;
     [SerializeField] private int _speed;
 
     public EventHandler OnEliminatedHandler;
 
     public int Damage => _damage;
+    public int ScorePoints => _scorePoints;
 
     private Vector3 MoveDirection { get; set; }
 

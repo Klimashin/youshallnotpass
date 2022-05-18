@@ -7,6 +7,7 @@ public class GameFSM : MonoBehaviour, IInitializable
     private StateMachine<States, Driver> _fsm;
     private UIController _uiController;
     private InputActions _input;
+    private PersistentStorage _storage;
 
     public void Initialize()
     {
@@ -15,10 +16,11 @@ public class GameFSM : MonoBehaviour, IInitializable
     }
 
     [Inject]
-    private void Construct(UIController uiController, InputActions input)
+    private void Construct(UIController uiController, InputActions input, PersistentStorage storage)
     {
         _uiController = uiController;
         _input = input;
+        _storage = storage;
     }
 
     public void OnStartGameButtonPressed()
@@ -36,8 +38,9 @@ public class GameFSM : MonoBehaviour, IInitializable
         _fsm.Driver.GameOverToGameplay.Invoke();
     }
 
-    public void OnGameOver()
+    public void OnGameOver(GameSessionData gameSessionData)
     {
+        _storage.TryUpdateHighscore(gameSessionData.CurrentScore);
         _fsm.Driver.GameplayToGameOver.Invoke();
     }
 
