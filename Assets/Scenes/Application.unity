@@ -602,8 +602,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerCharacter: {fileID: 1566537953}
   _damageZone: {fileID: 964716276}
-  _generationZoneOffsetHorizontal: 1
-  _generationZoneOffsetVertical: 2
+  _generationZoneOffsetHorizontal: 0
+  _generationZoneOffsetVertical: 0.2
 --- !u!1 &1566537951
 GameObject:
   m_ObjectHideFlags: 0
