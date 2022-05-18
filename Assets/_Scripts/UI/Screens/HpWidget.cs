@@ -28,6 +28,8 @@ public class HpWidget : MonoBehaviour
 
     private void SetHp(int currentHp)
     {
+        Debug.Log(currentHp);
+
         if (transform.childCount < currentHp)
         {
             var childCount = transform.childCount;

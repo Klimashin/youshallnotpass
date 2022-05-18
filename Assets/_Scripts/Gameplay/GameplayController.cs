@@ -61,7 +61,7 @@ public class GameplayController : MonoBehaviour
         TouchSimulation.Enable();
         EnhancedTouchSupport.Enable();
 
-        _gameSessionData = new GameSessionData(3, _weapons[0]);
+        _gameSessionData = new GameSessionData(_settings.InitialHp, _weapons[0]);
         NewGameSessionStarted?.Invoke(this, _gameSessionData);
 
         yield return new WaitForSeconds(1f);
@@ -232,7 +232,7 @@ public class GameSessionData
     {
         CurrentHp -= amount;
         CurrentHp = Mathf.Max(0, CurrentHp);
-        HpChanged?.Invoke(this, amount);
+        HpChanged?.Invoke(this, CurrentHp);
     }
 
     public void AddScore(int amount)
