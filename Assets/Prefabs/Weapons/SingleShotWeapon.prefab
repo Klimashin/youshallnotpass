@@ -56,7 +56,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4090765410433975705}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -76,8 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f059a53bd2113541bd6138591723222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _missile: {fileID: 4113920230931783804, guid: b18a07fee21451742bd4277c133c9265, type: 3}
-  _missileSpeed: 3
+  _missileSpeed: 5
   _shotCooldown: 0.5
-  _missileLifetime: 3
+  _missileLifetime: 2
+  _missilePrefab: {fileID: 4113920230931783804, guid: b18a07fee21451742bd4277c133c9265, type: 3}
   _missileLaunchPoint: {fileID: 4090765410413257571}

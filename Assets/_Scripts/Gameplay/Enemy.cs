@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
 
     public void Move(float deltaTime)
     {
-        transform.Translate(MoveDirection * (_speed * deltaTime));
+        transform.Translate(MoveDirection * (_speed * deltaTime), Space.World);
     }
 
     public void OnHit()

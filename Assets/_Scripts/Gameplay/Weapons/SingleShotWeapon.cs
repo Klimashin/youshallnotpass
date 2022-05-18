@@ -1,67 +1,15 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SingleShotWeapon : PlayerWeapon
 {
-    [SerializeField] private Missile _missile;
-    [SerializeField] private float _missileSpeed;
-    [SerializeField] private float _shotCooldown;
-    [SerializeField] private float _missileLifetime;
+    [SerializeField] protected Missile _missilePrefab;
     [SerializeField] private Transform _missileLaunchPoint;
 
-    private readonly List<Missile> _activeMissiles = new();
-    private float _currentShotCooldown;
-    
-    public override void WeaponUpdate(float deltaTime)
+    protected override void Shot()
     {
-        _currentShotCooldown -= deltaTime;
-        if (_currentShotCooldown < 0f)
-        {
-            _currentShotCooldown = _shotCooldown;
-            ShotMissile();
-        }
-        
-        foreach (var missile in _activeMissiles)
-        {
-            missile.Lifetime += deltaTime;
-            missile.transform.Translate(missile.transform.up * (_missileSpeed * deltaTime));
-        }
-
-        var expiredMissiles = _activeMissiles.FindAll(missile => missile.Lifetime >= _missileLifetime);
-        foreach (var missile in expiredMissiles)
-        {
-            UtilizeMissile(missile);
-        }
-    }
-
-    public override void EnemyHitHandler(object sender, Enemy e)
-    {
-        e.OnHit();
-        UtilizeMissile(sender as Missile);
-    }
-
-    public override void WeaponReset()
-    {
-        _currentShotCooldown = _shotCooldown;
-
-        for (int i = _activeMissiles.Count - 1; i >= 0; i--)
-        {
-            UtilizeMissile(_activeMissiles[i]);
-        }
-    }
-    
-    private void ShotMissile()
-    {
-        var missile = Instantiate(_missile, _missileLaunchPoint); // @TODO: use object pool
+        var missile = Instantiate(_missilePrefab, _missileLaunchPoint); // @TODO: use object pool
         missile.transform.SetParent(null);
         missile.EnemyHitHandler += EnemyHitHandler;
-        _activeMissiles.Add(missile);
-    }
-
-    private void UtilizeMissile(Missile missile)
-    {
-        missile.EnemyHitHandler -= EnemyHitHandler;
-        _activeMissiles.Remove(missile);
-        Destroy(missile.gameObject); // @TODO: use object pool
+        ActiveMissiles.Add(missile);
     }
 }

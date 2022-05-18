@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -20,6 +21,7 @@ public class GameplayController : MonoBehaviour
     private InputActions _input;
     private GameSettings _settings;
     private PlayerWeapon[] _weapons = new PlayerWeapon[3];
+    private int _currentWeaponIndex;
 
     [Inject]
     private void Construct(GameFSM fsm, InputActions input, GameSettings settings)
@@ -30,7 +32,11 @@ public class GameplayController : MonoBehaviour
         
         _damageZone.EnemyEnteredDamageZone += OnEnemyEnteredDamageZone;
 
-        _weapons[0] = Instantiate(_settings.StartWeapon, _playerCharacter.transform);
+        for (int i = 0; i < _settings.Weapons.Length; i++)
+        {
+            _weapons[i] = Instantiate(_settings.Weapons[i], _playerCharacter.transform);
+            _weapons[i].gameObject.SetActive(false);
+        }
 
         var cam = Camera.main;
         _screenTopLeftWorld = cam.ScreenToWorldPoint(new Vector3(0f, Screen.height, 0f));
@@ -56,12 +62,26 @@ public class GameplayController : MonoBehaviour
         _gameplayCoroutine = StartCoroutine(GameplayCoroutine());
     }
 
+    public void SetCurrentWeapon(int weaponIndex)
+    {
+        if (_currentWeaponIndex != weaponIndex)
+        {
+            _weapons[_currentWeaponIndex].gameObject.SetActive(false);
+        }
+
+        _currentWeaponIndex = weaponIndex;
+        _weapons[_currentWeaponIndex].gameObject.SetActive(true);
+    }
+
     private IEnumerator GameplayCoroutine()
     {
         TouchSimulation.Enable();
         EnhancedTouchSupport.Enable();
 
-        _gameSessionData = new GameSessionData(_settings.InitialHp, _weapons[0]);
+        _playerCharacter.transform.rotation = Quaternion.identity;
+        SetCurrentWeapon(0);
+        _gameSessionData = new GameSessionData(_settings.InitialHp, _settings.WeaponUnlockLimits);
+
         NewGameSessionStarted?.Invoke(this, _gameSessionData);
 
         yield return new WaitForSeconds(1f);
@@ -72,7 +92,7 @@ public class GameplayController : MonoBehaviour
         {
             var deltaTime = Time.deltaTime;
             HandlePlayerInput(deltaTime);
-            HandlePlayerWeapon(deltaTime);
+            HandlePlayerWeapons(deltaTime);
             HandleEnemySpawn(deltaTime);
             HandleEnemyMove(deltaTime);
 
@@ -80,15 +100,19 @@ public class GameplayController : MonoBehaviour
         }
 
         UtilizeAllEnemies();
+        ResetAllWeapons();
 
         _input.Gameplay.Disable();
 
         _fsm.OnGameOver(_gameSessionData);
     }
 
-    private void HandlePlayerWeapon(float deltaTime)
+    private void HandlePlayerWeapons(float deltaTime)
     {
-        _gameSessionData.CurrentWeapon.WeaponUpdate(deltaTime);
+        foreach (var weapon in _weapons)
+        {
+            weapon.WeaponUpdate(deltaTime);
+        }
     }
 
     private void HandleEnemyMove(float deltaTime)
@@ -119,7 +143,7 @@ public class GameplayController : MonoBehaviour
         _currentSpawnTimeout -= deltaTime;
         if (_currentSpawnTimeout <= 0f)
         {
-            _currentSpawnTimeout = _settings.SpawnTimeout;
+            _currentSpawnTimeout = _settings.EnemySpawnTimeout;
             SpawnEnemy();
         }
     }
@@ -163,6 +187,14 @@ public class GameplayController : MonoBehaviour
         Destroy(enemy.gameObject); // @TODO: use object pooling
     }
 
+    private void ResetAllWeapons()
+    {
+        foreach (var weapon in _weapons)
+        {
+            weapon.WeaponReset();
+        }
+    }
+
     private void UtilizeAllEnemies()
     {
         var count = _gameSessionData.ActiveEnemies.Count;
@@ -191,30 +223,22 @@ public class GameSessionData
 {
     public int CurrentHp { get; private set; }
     public int CurrentScore { get; private set; }
-    public PlayerWeapon CurrentWeapon { get; private set; }
 
     private readonly List<Enemy> _activeEnemies = new();
     public IReadOnlyList<Enemy> ActiveEnemies => _activeEnemies;
 
     public EventHandler<int> HpChanged;
     public EventHandler<int> ScoreChanged;
+    public EventHandler NextWeaponUnlocked;
 
-    public GameSessionData(int initialHp, PlayerWeapon startWeapon)
+    private int _currentUnlockLimitIndex = 0;
+    private int[] _weaponsUnlockLimits;
+
+    public GameSessionData(int initialHp, int[] weaponsUnlockLimits)
     {
         CurrentHp = initialHp;
         CurrentScore = 0;
-        CurrentWeapon = startWeapon;
-        CurrentWeapon.WeaponReset();
-    }
-
-    public void SetWeapon(PlayerWeapon weapon)
-    {
-        if (CurrentWeapon != null && CurrentWeapon != weapon)
-        {
-            weapon.WeaponReset();
-        }
-
-        CurrentWeapon = weapon;
+        _weaponsUnlockLimits = weaponsUnlockLimits;
     }
 
     public void AddEnemy(Enemy enemy)
@@ -239,5 +263,13 @@ public class GameSessionData
     {
         CurrentScore += amount;
         ScoreChanged?.Invoke(this, CurrentScore);
+
+        if (
+            _currentUnlockLimitIndex < _weaponsUnlockLimits.Length
+            && CurrentScore >= _weaponsUnlockLimits[_currentUnlockLimitIndex]
+        ) {
+            _currentUnlockLimitIndex++;
+            NextWeaponUnlocked?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

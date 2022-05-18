@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 384dd851def8e4747bf9127f8bbde1bc, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  StartWeapon: {fileID: 4090765410433975711, guid: 55262e7d0dce4084aab5b18af6b456b5, type: 3}
+  Weapons:
+  - {fileID: 4090765410433975711, guid: 55262e7d0dce4084aab5b18af6b456b5, type: 3}
+  - {fileID: 4090765410433975711, guid: ca22740a6c2762348bde19d910b04b0c, type: 3}
+  - {fileID: -2917235983323862337, guid: 41a4210ebd23c8a4fb932d04bcb5f938, type: 3}
+  WeaponUnlockLimits: 050000000a000000
   EnemyPrefab: {fileID: 7131616845275027606, guid: c00fed6e60010c745ad507bea9d5ab1c, type: 3}
   RotationSpeed: 50
   RotationConstraint: 60
-  SpawnTimeout: 1
+  EnemySpawnTimeout: 1
+  InitialHp: 3
